@@ -90,7 +90,7 @@ function displayLinksPopup(linksToShow, title) {
   popup.style.zIndex = "1000";
 
   popup.innerHTML = `
-            <div class="popup-content" style="background: white; padding: 2rem; border-radius: 10px; max-width: 80%; width: 100%; max-height: 80%; overflow: auto;">
+            <div class="popup-content" style="background: white; padding: 2rem; border-radius: 10px; max-width: 90%; width: 100%; max-height: 80%; overflow: auto;">
                 <div class="popup-header" style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
                     <h2 style="font-size: 1.8rem;">${title}</h2>
                     <span class="close-btn" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
