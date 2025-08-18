@@ -1,61 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="style.css">
     <title>Link Vault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <nav>
-            <div class="nav-title">
-                <h2>My Link Vault</h2>
+    <div class="app-container">
+        <aside class="glass-panel" style="padding: 30px; height: fit-content;">
+            <h1 class="holographic-header" style="font-size: 24px; margin-bottom: 30px;">Link Vault</h1>
+            
+            <div style="display: grid; gap: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Title</label>
+                    <input type="text" id="title" class="cyber-input" placeholder="Link title" style="width: 100%;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Description</label>
+                    <input type="text" id="description" class="cyber-input" placeholder="Optional description" style="width: 100%;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">URL</label>
+                    <input type="url" id="link" class="cyber-input" placeholder="https://" style="width: 100%;">
+                </div>
+                
+                <button id="saveButton" class="neon-btn" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-plus" style="margin-right: 8px;"></i>
+                    Add Link
+                </button>
             </div>
-            <div class="search">
-                <a href="">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <span>Search</span>
-                </a>
+        </aside>
+
+        <main>
+            <div class="glass-panel" style="padding: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 class="holographic-header" style="font-size: 20px;">Your Links</h2>
+                    <button id="searchBtn" class="neon-btn">
+                        <i class="fas fa-search" style="margin-right: 8px;"></i>
+                        Search
+                    </button>
+                </div>
+
+                <div id="recentLinksContainer">
+                    <div style="text-align: center; color: var(--text-secondary); padding: 40px 0;">
+                        <i class="fas fa-link" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>No links saved yet</p>
+                    </div>
+                </div>
             </div>
-        </nav>
-    </header>
-    <main>
-        <div class="container">
-            <div class="title">
-                <h3>Link Title</h3>
-                <input placeholder="Enter Title" type="text" id="title" name="title" required>
-            </div>
-            <div class="description">
-                <h3>Description</h3>
-                <input placeholder="Description" type="text" id="description" name="description">
-            </div>
-            <div class="link">
-                <h3>Link</h3>
-                <input placeholder="Enter Link" type="text" id="link" name="link" required autocapitalize="none"
-                    autocomplete="off" autocorrect="off" spellcheck="false">
-            </div>
-            <div class="button">
-                <button>save</button>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <div class="footer-content">
-            <p>© 2025 Suchak. All rights reserved.</p>
-        </div>
-    </footer>
+        </main>
+    </div>
 
     <script src="script.js"></script>
-
 </body>
-
 </html>

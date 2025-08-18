@@ -1,9 +1,10 @@
-// DOM Elements
+// DOM Elements - Updated selectors for new UI
 const titleInput = document.getElementById("title");
 const descriptionInput = document.getElementById("description");
 const linkInput = document.getElementById("link");
-const saveButton = document.querySelector("button");
-const searchBtn = document.querySelector(".search a");
+const saveButton = document.getElementById("saveButton");
+const searchBtn = document.getElementById("searchBtn");
+const recentLinksContainer = document.getElementById("recentLinksContainer");
 
 // Initialize links array from localStorage or create empty array
 let links = JSON.parse(localStorage.getItem("links")) || [];
@@ -15,17 +16,13 @@ saveButton.addEventListener("click", () => {
   let url = linkInput.value.trim();
 
   if (!title || !url) {
-    alert("Title and Link are required!");
+    showAlert("Title and Link are required!", "error");
     return;
   }
 
   // Validate URL format
-  if (
-    !url.match(
-      /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?[^\s]*)?(#[^\s]*)?$/
-    )
-  ) {
-    alert("Please enter a valid URL (e.g., http://example.com or example.com)");
+  if (!url.match(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?[^\s]*)?(#[^\s]*)?$/)) {
+    showAlert("Please enter a valid URL (e.g., http://example.com or example.com)", "error");
     return;
   }
 
@@ -52,7 +49,7 @@ saveButton.addEventListener("click", () => {
   descriptionInput.value = "";
   linkInput.value = "";
 
-  alert("Link saved successfully!");
+  showAlert("Link saved successfully!", "success");
   displayRecentLinks();
 });
 
@@ -68,7 +65,7 @@ searchBtn.addEventListener("click", (e) => {
   );
 
   if (foundLinks.length === 0) {
-    alert("No links found with that title!");
+    showAlert("No links found with that title!", "error");
   } else {
     displayLinksPopup(foundLinks, `Search Results for "${searchTerm}"`);
   }
@@ -83,47 +80,33 @@ function displayLinksPopup(linksToShow, title) {
   popup.style.left = "0";
   popup.style.width = "100%";
   popup.style.height = "100%";
-  popup.style.backgroundColor = "rgba(0,0,0,0.5)";
+  popup.style.backgroundColor = "rgba(0,0,0,0.7)";
   popup.style.display = "flex";
   popup.style.justifyContent = "center";
   popup.style.alignItems = "center";
   popup.style.zIndex = "1000";
 
   popup.innerHTML = `
-            <div class="popup-content" style="background: white; padding: 2rem; border-radius: 10px; max-width: 90%; width: 100%; max-height: 80%; overflow: auto;">
-                <div class="popup-header" style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                    <h2 style="font-size: 1.8rem;">${title}</h2>
-                    <span class="close-btn" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
-                </div>
-                <div class="links-container" style="display: flex; flex-direction: column; align-items: center; gap: 0.6rem;">
-                    ${linksToShow
-                      .map(
-                        (link) => `
-                        <div class="link-item" style="display: flex;
-                         flex-direction: column; border: 1px solid #ddd; padding: 1rem; border-radius: 5px; width: 100%; align-items: center;">
-                            <h3 style="margin-bottom: 0.5rem; font-size: 2rem;">${
-                              link.title
-                            }</h3>
-                            ${
-                              link.description
-                                ? `<p style="margin-bottom: 0.5rem; opacity: 0.7;">${link.description}</p>`
-                                : ""
-                            }
-                            <a href="${
-                              link.url
-                            }" target="_blank" style="word-break: break-all; display: block; margin-bottom: 0.5rem;">${
-                          link.url
-                        }</a>
-                            <button class="delete-btn" data-id="${
-                              link.id
-                            }" style="padding: 0.5rem 1rem; font-size: 1.2rem; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer;">Delete</button>
-                        </div>
-                    `
-                      )
-                      .join("")}
-                </div>
-            </div>
-        `;
+    <div class="popup-content glass-panel" style="padding: 2rem; max-width: 90%; width: 100%; max-width: 700px; max-height: 80vh; overflow-y: auto;">
+      <div class="popup-header" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; align-items: center;">
+        <h2 class="holographic-header" style="font-size: 1.5rem;">${title}</h2>
+        <span class="close-btn" style="cursor: pointer; font-size: 1.5rem; color: var(--text-secondary);">&times;</span>
+      </div>
+      <div class="links-container" style="display: grid; gap: 1rem;">
+        ${linksToShow.map(link => `
+          <div class="link-card" style="border-left: 3px solid var(--neon-purple);">
+            <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem; color: var(--neon-blue);">${link.title}</h3>
+            ${link.description ? `<p style="margin-bottom: 0.5rem; color: var(--text-secondary);">${link.description}</p>` : ''}
+            <a href="${link.url}" target="_blank" style="display: block; margin-bottom: 0.5rem; color: var(--neon-blue); word-break: break-all;">${link.url}</a>
+            <button class="neon-btn delete-btn" data-id="${link.id}" style="background: var(--danger); border-color: var(--danger); margin-top: 0.5rem;">
+              <i class="fas fa-trash" style="margin-right: 8px;"></i>
+              Delete
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
 
   document.body.appendChild(popup);
 
@@ -145,66 +128,43 @@ function displayLinksPopup(linksToShow, title) {
       const id = parseInt(e.target.dataset.id);
       links = links.filter((link) => link.id !== id);
       localStorage.setItem("links", JSON.stringify(links));
-      e.target.closest(".link-item").remove();
+      e.target.closest(".link-card").remove();
       displayRecentLinks();
     });
   });
 }
 
-// Display recent 3 links on homepage
+// Display recent links
 function displayRecentLinks() {
-  let recentLinksContainer = document.querySelector(".recent-links");
-
-  // Create container if it doesn't exist
-  if (!recentLinksContainer) {
-    const container = document.querySelector(".container");
-    recentLinksContainer = document.createElement("div");
-    recentLinksContainer.className = "recent-links";
-    recentLinksContainer.style.width = "80%";
-    recentLinksContainer.style.marginTop = "2rem";
-    container.appendChild(recentLinksContainer);
-  }
-
   const recentLinks = links.slice(0, 3);
 
   if (recentLinks.length === 0) {
-    recentLinksContainer.innerHTML = "<p>No links saved yet.</p>";
+    recentLinksContainer.innerHTML = `
+      <div style="text-align: center; color: var(--text-secondary); padding: 40px 0;">
+        <i class="fas fa-link" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+        <p>No links saved yet</p>
+      </div>
+    `;
   } else {
     recentLinksContainer.innerHTML = `
-                <h2 style="margin-bottom: 1rem; text-align: center;">Recent Links</h2>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    ${recentLinks
-                      .map(
-                        (link) => `
-                        <div class="recent-link-item" style="border: 1px solid #ddd; padding: 1.5rem; border-radius: 10px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                            <a href="${
-                              link.url
-                            }" target="_blank" style="text-decoration: none; color: inherit;">
-                                <h3 style="margin-bottom: 0.5rem; text-align: center; font-size: 1.3rem;">${
-                                  link.title
-                                }</h3>
-                            </a>
-                            ${
-                              link.description
-                                ? `<p style="margin-bottom: 0.5rem; opacity: 0.7; text-align: center;">${link.description}</p>`
-                                : ""
-                            }
-                            <a href="${
-                              link.url
-                            }" target="_blank" style="word-break: break-all; display: block; text-align: center; color: #0066cc;">${
-                          link.url
-                        }</a>
-                        </div>
-                    `
-                      )
-                      .join("")}
-                </div>
-                ${
-                  links.length > 3
-                    ? '<button id="seeMoreBtn" style="margin-top: 1rem; text-align: center; width: 60%; padding: 0.7rem; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">See More</button>'
-                    : ""
-                }
-            `;
+      <div style="display: grid; gap: 1.5rem;">
+        ${recentLinks.map(link => `
+          <div class="link-card">
+            <a href="${link.url}" target="_blank" style="text-decoration: none; color: inherit;">
+              <h3 style="margin-bottom: 0.5rem; color: var(--neon-blue);">${link.title}</h3>
+            </a>
+            ${link.description ? `<p style="margin-bottom: 0.5rem; color: var(--text-secondary);">${link.description}</p>` : ''}
+            <a href="${link.url}" target="_blank" style="display: block; margin-bottom: 0.5rem; color: var(--neon-blue); word-break: break-all;">${link.url}</a>
+          </div>
+        `).join('')}
+      </div>
+      ${links.length > 3 ? `
+        <button id="seeMoreBtn" class="neon-btn" style="margin: 1.5rem auto 0; display: block;">
+          <i class="fas fa-ellipsis-h" style="margin-right: 8px;"></i>
+          See All Links
+        </button>
+      ` : ''}
+    `;
 
     if (links.length > 3) {
       document.getElementById("seeMoreBtn").addEventListener("click", () => {
@@ -213,6 +173,48 @@ function displayRecentLinks() {
     }
   }
 }
+
+// Show alert notification
+function showAlert(message, type) {
+  const alert = document.createElement("div");
+  alert.style.position = "fixed";
+  alert.style.top = "20px";
+  alert.style.right = "20px";
+  alert.style.padding = "12px 24px";
+  alert.style.borderRadius = "8px";
+  alert.style.color = "white";
+  alert.style.zIndex = "1001";
+  alert.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+  alert.style.animation = "slideIn 0.3s ease-out";
+  
+  if (type === "error") {
+    alert.style.background = "var(--danger)";
+  } else {
+    alert.style.background = "var(--success)";
+  }
+  
+  alert.textContent = message;
+  document.body.appendChild(alert);
+  
+  setTimeout(() => {
+    alert.style.animation = "slideOut 0.3s ease-in";
+    setTimeout(() => alert.remove(), 300);
+  }, 3000);
+}
+
+// Add CSS for animations
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
 
 document.addEventListener("DOMContentLoaded", () => {
   displayRecentLinks();
