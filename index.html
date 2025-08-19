@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="light-mode">
+    <div class="theme-toggle-container">
+        <button id="themeToggle" class="theme-toggle-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+    
     <div class="app-container">
         <aside class="glass-panel" style="padding: 30px; height: fit-content;">
             <h1 class="holographic-header" style="font-size: 24px; margin-bottom: 30px;">Link Vault</h1>
@@ -22,7 +27,7 @@
                 
                 <div>
                     <label style="display: block; margin-bottom: 8px; color: var(--text-secondary);">Description</label>
-                    <input type="text" id="description" class="cyber-input" placeholder="Optional description" style="width: 100%;">
+                    <input type="text" id="description" class="cyber-input" placeholder="Optional" style="width: 100%;">
                 </div>
                 
                 <div>

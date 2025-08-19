@@ -1,15 +1,78 @@
-// DOM Elements - Updated selectors for new UI
 const titleInput = document.getElementById("title");
 const descriptionInput = document.getElementById("description");
 const linkInput = document.getElementById("link");
 const saveButton = document.getElementById("saveButton");
 const searchBtn = document.getElementById("searchBtn");
 const recentLinksContainer = document.getElementById("recentLinksContainer");
+const themeToggle = document.getElementById("themeToggle");
 
-// Initialize links array from localStorage or create empty array
 let links = JSON.parse(localStorage.getItem("links")) || [];
 
-// Save link function with URL validation
+// Theme toggle functionality
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    document.body.classList.toggle("dark-mode");
+    
+    // Update icon
+    const icon = themeToggle.querySelector("i");
+    if (document.body.classList.contains("dark-mode")) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+        showDarkModeAlert();
+    } else {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    }
+    
+    // Save theme preference
+    localStorage.setItem("theme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+});
+
+// Show dark mode alert
+function showDarkModeAlert() {
+    const alert = document.createElement("div");
+    alert.className = "dark-mode-alert";
+    alert.innerHTML = `
+        <div class="alert-content">
+            <span class="alert-close">&times;</span>
+            <div class="alert-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            <div class="alert-text">
+                <h3>Dark Mode</h3>
+                <p>Dark mode is currently under development. Some features may not work as expected.</p>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(alert);
+    
+    // Close alert when clicking X
+    const closeBtn = alert.querySelector(".alert-close");
+    closeBtn.addEventListener("click", () => {
+        alert.style.animation = "slideOut 0.3s ease-in";
+        setTimeout(() => alert.remove(), 300);
+    });
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(alert)) {
+            alert.style.animation = "slideOut 0.3s ease-in";
+            setTimeout(() => alert.remove(), 300);
+        }
+    }, 5000);
+}
+
+// Check for saved theme preference
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+    document.body.classList.remove("light-mode");
+    document.body.classList.add("dark-mode");
+    const icon = themeToggle.querySelector("i");
+    icon.classList.remove("fa-moon");
+    icon.classList.add("fa-sun");
+}
+
 saveButton.addEventListener("click", () => {
   const title = titleInput.value.trim();
   const description = descriptionInput.value.trim();
@@ -20,18 +83,15 @@ saveButton.addEventListener("click", () => {
     return;
   }
 
-  // Validate URL format
   if (!url.match(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(\?[^\s]*)?(#[^\s]*)?$/)) {
-    showAlert("Please enter a valid URL (e.g., http://example.com or example.com)", "error");
+    showAlert("Please enter a valid URL (e.g., example.com)", "error");
     return;
   }
 
-  // Add https:// if not present
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     url = "https://" + url;
   }
 
-  // Create new link object
   const newLink = {
     id: Date.now(),
     title,
@@ -40,11 +100,9 @@ saveButton.addEventListener("click", () => {
     createdAt: new Date().toISOString(),
   };
 
-  // Add to links array and save to localStorage
   links.unshift(newLink);
   localStorage.setItem("links", JSON.stringify(links));
 
-  // Clear inputs
   titleInput.value = "";
   descriptionInput.value = "";
   linkInput.value = "";
@@ -53,7 +111,6 @@ saveButton.addEventListener("click", () => {
   displayRecentLinks();
 });
 
-// Search functionality
 searchBtn.addEventListener("click", (e) => {
   e.preventDefault();
   const searchTerm = prompt("Enter title to search:");
@@ -71,7 +128,7 @@ searchBtn.addEventListener("click", (e) => {
   }
 });
 
-// Display links in a popup
+//popup
 function displayLinksPopup(linksToShow, title) {
   const popup = document.createElement("div");
   popup.className = "popup";
@@ -140,8 +197,8 @@ function displayRecentLinks() {
 
   if (recentLinks.length === 0) {
     recentLinksContainer.innerHTML = `
-      <div style="text-align: center; color: var(--text-secondary); padding: 40px 0;">
-        <i class="fas fa-link" style="font-size: 40px; margin-bottom: 15px; opacity: 0.5;"></i>
+      <div class="empty-state">
+        <i class="fas fa-link"></i>
         <p>No links saved yet</p>
       </div>
     `;
@@ -151,7 +208,7 @@ function displayRecentLinks() {
         ${recentLinks.map(link => `
           <div class="link-card">
             <a href="${link.url}" target="_blank" style="text-decoration: none; color: inherit;">
-              <h3 style="margin-bottom: 0.5rem; color: var(--neon-blue);">${link.title}</h3>
+              <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">${link.title}</h3>
             </a>
             ${link.description ? `<p style="margin-bottom: 0.5rem; color: var(--text-secondary);">${link.description}</p>` : ''}
             <a href="${link.url}" target="_blank" style="display: block; margin-bottom: 0.5rem; color: var(--neon-blue); word-break: break-all;">${link.url}</a>
@@ -212,6 +269,58 @@ style.textContent = `
   @keyframes slideOut {
     from { transform: translateX(0); opacity: 1; }
     to { transform: translateX(100%); opacity: 0; }
+  }
+  
+  .dark-mode-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1002;
+    width: 90%;
+    max-width: 500px;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .alert-content {
+    background: linear-gradient(135deg, #0a192f 0%, #1a1a2e 100%);
+    border: 1px solid var(--neon-purple);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+    position: relative;
+  }
+  
+  .alert-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+  }
+  
+  .alert-close:hover {
+    color: var(--neon-blue);
+  }
+  
+  .alert-icon {
+    margin-right: 15px;
+    font-size: 2rem;
+    color: var(--neon-purple);
+  }
+  
+  .alert-text h3 {
+    margin-bottom: 5px;
+    color: var(--neon-blue);
+  }
+  
+  .alert-text p {
+    color: var(--text-secondary);
+    margin: 0;
   }
 `;
 document.head.appendChild(style);
