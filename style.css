@@ -28,6 +28,9 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     transition: all 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 body.light-mode {
@@ -77,6 +80,7 @@ body.dark-mode {
         inset 0 0 0 1px rgba(255, 255, 255, 0.2);
     overflow: hidden;
     transition: all 0.3s ease;
+    min-width: 70%;
 }
 
 .dark-mode .glass-panel {
@@ -197,6 +201,26 @@ body.dark-mode {
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 30px;
+}
+
+.app-container {
+    flex: 1;
+    min-width: 65%;
+}
+
+.footer-content {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid gray;
+    padding: 1rem;
+    width: 100%;
+}
+
+footer {
+    margin-top: auto;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
